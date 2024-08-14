@@ -15,7 +15,7 @@ bool debug = false;
 volatile int encoderPos = 0;
 volatile int lastEncoded = 0;
 
-const int batteryFullEncoder = 10000;
+const int batteryFullEncoder = 200;
 
 // Instantiate Bounce object for debouncing the button
 Bounce buttonDebouncer = Bounce();
@@ -42,6 +42,7 @@ void setup() {
   
 }
 int loop_count = 1;
+
 void loop() {
   int MSB = digitalRead(encoderPinA); // MSB = most significant bit
   int LSB = digitalRead(encoderPinB); // LSB = least significant bit
@@ -50,11 +51,11 @@ void loop() {
   int sum = (lastEncoded << 2) | encoded; // Adding it to the previous encoded value
 
   if (sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011) encoderPos++;
-  if (sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) encoderPos--;
+  if (sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) encoderPos++;
 
   lastEncoded = encoded;
   
-  if (encoderPos >= batteryFullEncoder || encoderPos <= -batteryFullEncoder )
+  if (encoderPos >= batteryFullEncoder)
   {
 //    int sign = abs(encoderPos)/encoderPos;
 //    encoderPos = batteryFullEncoder * sign;
@@ -62,7 +63,7 @@ void loop() {
     //glow light and wait for button press
     glowLightAndWaitForButton();
     digitalWrite(relayPin, HIGH);
-    delay(10000);
+    delay(23000);
   }
   digitalWrite(relayPin, LOW);
   if (debug)
